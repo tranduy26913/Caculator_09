@@ -18,6 +18,7 @@ public class MainActivity extends AppCompatActivity {
     double a=0,b=0,result=0;
     boolean Calculating=false;
     String method = "";
+    double temp;
 
     private static final DecimalFormat df = new DecimalFormat("0.0000000000");
 
@@ -104,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
                 textView.setTextSize(TypedValue.COMPLEX_UNIT_SP,72);
             }
             textView.setText(tmp);
-            handleCalculator();
+            //handleCalculator();
         }
     }
 
@@ -127,33 +128,52 @@ public class MainActivity extends AppCompatActivity {
     private class handleClickCalculator implements  View.OnClickListener{
         @Override
         public void onClick(View view) {
-            method = ((Button)findViewById(view.getId())).getText().toString();
+            String tmp = textView.getText().toString();
+
+            if(method.compareTo("")==0) {
+                temp = Double.parseDouble(tmp);
+                method = ((Button)findViewById(view.getId())).getText().toString();
+            }
+            else {
+                switch (method) {
+                    case "+":
+                        temp += Double.parseDouble(tmp);
+                        break;
+                    case "-":
+                        temp -= Double.parseDouble(tmp);
+                        break;
+                    case "X":
+                        temp *= Double.parseDouble(tmp);
+                        break;
+                    case "÷":
+                        temp /= Double.parseDouble(tmp);
+                        break;
+                    default:
+                        return;
+                }
+                method = ((Button)findViewById(view.getId())).getText().toString();
+            }
 
             textView.setText("");
-
-
         }
     }
     private void calculator(){
+        String tmp = textView.getText().toString();
         switch (method){
             case "+":
-                result = a+b;
-                a = result;
+                result = temp+Double.parseDouble(tmp);
                 method ="";
                 break;
             case "-":
-                result = a-b;
-                a = result;
+                result = temp-Double.parseDouble(tmp);
                 method ="";
                 break;
             case "X":
-                result = a*b;
-                a = result;
+                result = temp*Double.parseDouble(tmp);
                 method ="";
                 break;
             case "÷":
-                result = a/b;
-                a = result;
+                result = temp/Double.parseDouble(tmp);
                 method ="";
                 break;
             default:
