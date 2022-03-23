@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity"
     android:orientation="vertical">
-
+    <!--Trần Bảo Duy: Text view giúp hiển thị các phép tính, kết quả của máy tính-->
     <TextView
         android:id="@+id/textView"
         android:layout_width="0dp"
@@ -23,7 +23,8 @@
         android:textFontWeight="100"
 
         android:fontFamily="sans-serif-light"/>
-
+    <!--Nguyễn Phúc An: các guideline giúp định hình layout của màn hình calculator, chia màn hình thành 6 phần (dòng) bằng nhau-->
+    <!--Nguyễn Phúc An: Các LinearLayout sẽ được cố định giữa 2 guideline-->
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline2"
         android:layout_width="wrap_content"
@@ -65,7 +66,8 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="1" />
-
+    <!--Nguyễn Phúc An: Mỗi dòng sẽ là một LinearLayout với các element thuộc dòng đó-->
+    <!--Nguyễn Phúc An: Để tạo dòng tiếp theo chỉ cần copy hết linearLayout và thay đổi các id, constraint để tạo một dòng khác-->
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -76,7 +78,9 @@
         app:layout_constraintTop_toTopOf="@+id/guideline2"
         app:layout_constraintVertical_bias="0.0"
         tools:layout_editor_absoluteX="2dp">
-
+        <!--Trần Bảo Duy: Tuỳ vào thiết kế có sẵn thì trong linearlayout sẽ có các button tương ứng-->
+        <!--Trần Bảo Duy: Các button sẽ được thiết kế dựa vào mẫu thiết kế cho sẵn-->
+        <!--Trần Bảo Duy: Có thuộc tính app:strokeColor để tạo hiệu ứng cho button khi được nhấn vào-->
         <Button
             android:id="@+id/btn7"
             android:layout_width="0dp"
@@ -401,7 +405,6 @@
             android:fontFamily="sans-serif-light"
             android:textColor="#202020"
             android:textSize="48dp"/>
-
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
