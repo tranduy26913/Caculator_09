@@ -1,5 +1,7 @@
 package hcmute.edu.vn.calculator_09;
 
+import java.math.BigDecimal;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
@@ -9,12 +11,14 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.math.MathContext;
 import java.text.DecimalFormat;
 
 public class MainActivity extends AppCompatActivity {
 
-    Button btn1,btn2,btn3,btn4,btn5,btn6,btn7,btn8,btn9,btn0,btnDot,btnC,btnResult,btnAdd,btnSub,btnMulti,btnDiv;
+    Button btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8, btn9, btn0, btnDot, btnC, btnResult, btnAdd, btnSub, btnMulti, btnDiv;
     TextView textView;
+<<<<<<< Updated upstream
     double a=0,b=0,result=0;
     boolean Calculating=false;
     String method = "";
@@ -22,14 +26,20 @@ public class MainActivity extends AppCompatActivity {
 
     private static final DecimalFormat df = new DecimalFormat("0.0000000000");
 
+=======
+    double newNumber = 0, result = 0;//các toán tử và kết quả
+    boolean calculating = false;//flag cho biết phép tính đang được thực hiện
+    String method = "";//phép tính
+>>>>>>> Stashed changes
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        setControls();
-        setEvent();
+        setControls();//viết các control
+        setEvent();//cài đặt các sự kiện
     }
-    private void setControls(){
+
+    private void setControls() {
         btn0 = (Button) findViewById(R.id.btn0);
         btn1 = (Button) findViewById(R.id.btn1);
         btn2 = (Button) findViewById(R.id.btn2);
@@ -49,84 +59,96 @@ public class MainActivity extends AppCompatActivity {
         btnDiv = (Button) findViewById(R.id.btnDiv);
         textView = (TextView) findViewById(R.id.textView);
     }
-    private void setEvent(){
-        btn0.setOnClickListener(new HandleClickNum());
-        btn1.setOnClickListener(new HandleClickNum());
-        btn2.setOnClickListener(new HandleClickNum());
-        btn3.setOnClickListener(new HandleClickNum());
-        btn4.setOnClickListener(new HandleClickNum());
-        btn5.setOnClickListener(new HandleClickNum());
-        btn6.setOnClickListener(new HandleClickNum());
-        btn7.setOnClickListener(new HandleClickNum());
-        btn8.setOnClickListener(new HandleClickNum());
-        btn9.setOnClickListener(new HandleClickNum());
-        btnC.setOnClickListener(new View.OnClickListener() {
+
+    private void setEvent() {
+        ///Sự kiện các nút số
+        btn0.setOnClickListener(new HandleClickNumber());
+        btn1.setOnClickListener(new HandleClickNumber());
+        btn2.setOnClickListener(new HandleClickNumber());
+        btn3.setOnClickListener(new HandleClickNumber());
+        btn4.setOnClickListener(new HandleClickNumber());
+        btn5.setOnClickListener(new HandleClickNumber());
+        btn6.setOnClickListener(new HandleClickNumber());
+        btn7.setOnClickListener(new HandleClickNumber());
+        btn8.setOnClickListener(new HandleClickNumber());
+        btn9.setOnClickListener(new HandleClickNumber());
+        btnDot.setOnClickListener(new HandleClickNumber());
+        ///
+        btnC.setOnClickListener(new View.OnClickListener() {//xử lý sự kiện bấm C
             @Override
             public void onClick(View view) {
                 textView.setText("");
                 method = "";
-                a=0;
-                result=0;
+                newNumber = 0;
+                result = 0;
+                calculating = false;
             }
         });
+
+        //Sự kiện các nút phép tính
         btnAdd.setOnClickListener(new handleClickCalculator());
         btnSub.setOnClickListener(new handleClickCalculator());
         btnMulti.setOnClickListener(new handleClickCalculator());
         btnDiv.setOnClickListener(new handleClickCalculator());
+
+        //Sự kiện nút =
         btnResult.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                calculator();
-                String tmp = Double.toString(result);
-                if(tmp.length()>10){
-                    textView.setTextSize(TypedValue.COMPLEX_UNIT_SP,80 - tmp.length() * 2);
+                if(!handleParseNumber())//nếu parse lỗi sẽ dừng thực hiện phép tính
+                    return;
+                if (calculator()) {
+                    String tmp = BigDecimal.valueOf(result).toPlainString(); //hiển thị giá trị dạng thập phân
+                    if (tmp.length() > 10) { // điều chỉnh kích thước chữ để vừa khung nhìn
+                        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 80 - tmp.length() * 2);
+                    } else {
+                        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 72);
+                    }
+                    textView.setText(tmp); // gắn kết quả vào text view
+                    calculating = false;
                 }
-                else {
-                    textView.setTextSize(TypedValue.COMPLEX_UNIT_SP,72);
-                }
-                textView.setText(tmp);
-
             }
         });
-        btnDot.setOnClickListener(new HandleClickNum());
-
     }
 
-    private class HandleClickNum implements View.OnClickListener {
+    private class HandleClickNumber implements View.OnClickListener {
         @Override
         public void onClick(View view) {
-            Button btn =(Button) findViewById(view.getId());
+            Button btn = (Button) findViewById(view.getId());
             String tmp = textView.getText().toString();
             tmp = tmp + btn.getText().toString();
-            if(tmp.length()>10){
-                textView.setTextSize(TypedValue.COMPLEX_UNIT_SP,80 - tmp.length() * 2);
-            }
-            else {
-                textView.setTextSize(TypedValue.COMPLEX_UNIT_SP,72);
+            if (tmp.length() > 10) {// điều chỉnh kích thước chữ để vừa khung nhìn
+                textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 80 - tmp.length() * 2);
+            } else {
+                textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 72);
             }
             textView.setText(tmp);
+<<<<<<< Updated upstream
             //handleCalculator();
+=======
+>>>>>>> Stashed changes
         }
     }
 
-    private void handleCalculator(){
+    private boolean handleParseNumber() {//xử lý ép kiểu sang số thực
         String tmp = textView.getText().toString();
         try {
-            if(method.compareTo("")!=0) {
-                b = Double.parseDouble(tmp);
+            if (!method.equals("")) {//Nếu có bấm phép tính thì số gán vào newNumber
+                newNumber = Double.parseDouble(tmp);
+            } else {//Nếu chưa gán phép tính thì số trên text view gán vào result
+                result = Double.parseDouble(tmp);
             }
-            else {
-                a = Double.parseDouble(tmp);
-            }
-        }
-        catch (Exception e){
-            result = 0;
-            a=0;b=0;
+            return true;
+        } catch (Exception e) {
+            Toast.makeText(MainActivity.this, "Lỗi nhập số. Vui lòng nhập lại", Toast.LENGTH_SHORT).show();
+            textView.setText("");
+            return false;
         }
     }
 
-    private class handleClickCalculator implements  View.OnClickListener{
+    private class handleClickCalculator implements View.OnClickListener {
         @Override
+<<<<<<< Updated upstream
         public void onClick(View view) {
             String tmp = textView.getText().toString();
 
@@ -175,10 +197,47 @@ public class MainActivity extends AppCompatActivity {
             case "÷":
                 result = temp/Double.parseDouble(tmp);
                 method ="";
+=======
+        public void onClick(View view) {//Xử lý phép tính liên tiếp cho tới khi bấm = mới kết thúc
+            if(!handleParseNumber())//nếu parse lỗi sẽ dừng thực hiện phép tính
+                return;
+            if (calculating) {//nếu chưa bấm '='
+                if(!calculator())//thực hiện phép tính cũ
+                    return;
+            } else//nếu đã bấm = hoặc app bấm phép tính lần đầu thì gán true để những lần sau thực hiện phép tính cũ
+                calculating = true;
+            method = ((Button) findViewById(view.getId())).getText().toString();//lưu phép tính mới
+            textView.setText("");//clear text view
+        }
+    }
+
+    private boolean calculator() {
+//        if(!handleParseNumber())//parse số
+//            return false;
+        switch (method) {
+            case "+":
+                result += newNumber;
+                break;
+            case "-":
+                result -= newNumber;
+                break;
+            case "X":
+                result *= newNumber;
+                break;
+            case "÷":
+                if (newNumber == 0) {
+                    Toast.makeText(MainActivity.this, "Không thể chia cho 0. Vui lòng nhập lại số", Toast.LENGTH_SHORT).show();
+                    textView.setText("");
+                    return false;
+                }
+                result /= newNumber;
+>>>>>>> Stashed changes
                 break;
             default:
-                return;
+                return false;
         }
+        method = "";
+        return true;
 
     }
 
