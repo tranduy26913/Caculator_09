@@ -18,19 +18,11 @@ public class MainActivity extends AppCompatActivity {
 
     Button btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8, btn9, btn0, btnDot, btnC, btnResult, btnAdd, btnSub, btnMulti, btnDiv;
     TextView textView;
-<<<<<<< Updated upstream
-    double a=0,b=0,result=0;
-    boolean Calculating=false;
-    String method = "";
-    double temp;
 
-    private static final DecimalFormat df = new DecimalFormat("0.0000000000");
 
-=======
     double newNumber = 0, result = 0;//các toán tử và kết quả
     boolean calculating = false;//flag cho biết phép tính đang được thực hiện
     String method = "";//phép tính
->>>>>>> Stashed changes
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -123,10 +115,6 @@ public class MainActivity extends AppCompatActivity {
                 textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 72);
             }
             textView.setText(tmp);
-<<<<<<< Updated upstream
-            //handleCalculator();
-=======
->>>>>>> Stashed changes
         }
     }
 
@@ -148,56 +136,6 @@ public class MainActivity extends AppCompatActivity {
 
     private class handleClickCalculator implements View.OnClickListener {
         @Override
-<<<<<<< Updated upstream
-        public void onClick(View view) {
-            String tmp = textView.getText().toString();
-
-            if(method.compareTo("")==0) {
-                temp = Double.parseDouble(tmp);
-                method = ((Button)findViewById(view.getId())).getText().toString();
-            }
-            else {
-                switch (method) {
-                    case "+":
-                        temp += Double.parseDouble(tmp);
-                        break;
-                    case "-":
-                        temp -= Double.parseDouble(tmp);
-                        break;
-                    case "X":
-                        temp *= Double.parseDouble(tmp);
-                        break;
-                    case "÷":
-                        temp /= Double.parseDouble(tmp);
-                        break;
-                    default:
-                        return;
-                }
-                method = ((Button)findViewById(view.getId())).getText().toString();
-            }
-
-            textView.setText("");
-        }
-    }
-    private void calculator(){
-        String tmp = textView.getText().toString();
-        switch (method){
-            case "+":
-                result = temp+Double.parseDouble(tmp);
-                method ="";
-                break;
-            case "-":
-                result = temp-Double.parseDouble(tmp);
-                method ="";
-                break;
-            case "X":
-                result = temp*Double.parseDouble(tmp);
-                method ="";
-                break;
-            case "÷":
-                result = temp/Double.parseDouble(tmp);
-                method ="";
-=======
         public void onClick(View view) {//Xử lý phép tính liên tiếp cho tới khi bấm = mới kết thúc
             if(!handleParseNumber())//nếu parse lỗi sẽ dừng thực hiện phép tính
                 return;
@@ -231,7 +169,6 @@ public class MainActivity extends AppCompatActivity {
                     return false;
                 }
                 result /= newNumber;
->>>>>>> Stashed changes
                 break;
             default:
                 return false;
