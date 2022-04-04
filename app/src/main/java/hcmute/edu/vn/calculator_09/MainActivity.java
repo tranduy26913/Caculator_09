@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.math.MathContext;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 
 public class MainActivity extends AppCompatActivity {
@@ -20,7 +21,7 @@ public class MainActivity extends AppCompatActivity {
     Button btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8, btn9, btn0, btnDot, btnC, btnResult, btnAdd, btnSub, btnMulti, btnDiv;
     TextView textView;
 
-
+    private static final DecimalFormat dfSharp = new DecimalFormat("#.########");
     double newNumber = 0, result = 0;//các toán tử và kết quả
     boolean calculating = false;//flag cho biết phép tính đang được thực hiện
     String method = "";//phép tính
@@ -82,27 +83,27 @@ public class MainActivity extends AppCompatActivity {
         });
 
         //Sự kiện các nút phép tính
-        btnAdd.setOnClickListener(new handleClickCalculator());
-        btnSub.setOnClickListener(new handleClickCalculator());
-        btnMulti.setOnClickListener(new handleClickCalculator());
-        btnDiv.setOnClickListener(new handleClickCalculator());
+        btnAdd.setOnClickListener(new HandleClickCalculator());
+        btnSub.setOnClickListener(new HandleClickCalculator());
+        btnMulti.setOnClickListener(new HandleClickCalculator());
+        btnDiv.setOnClickListener(new HandleClickCalculator());
 
         //Sự kiện nút =
         btnResult.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(!handleParseNumber())//nếu parse lỗi sẽ dừng thực hiện phép tính
+                if(!ParseNumber())//nếu parse lỗi sẽ dừng thực hiện phép tính
                     return;
                 if (calculator()) {
-                    String tmp = BigDecimal.valueOf(result).toPlainString(); //hiển thị giá trị dạng thập phân
-                    setTextInTextView(tmp);
-                    textView.setText(tmp); // gắn kết quả vào text view
+                    result = BigDecimal.valueOf(result).setScale(8, RoundingMode.HALF_UP).doubleValue(); //hiển thị giá trị dạng thập phân
+                    String tmp = BigDecimal.valueOf(result).toPlainString();
+                    setTextInTextView(tmp); // gắn kết quả vào text view
                     calculating = false;
                 }
             }
         });
     }
-
+//Xử lý sự kiện bấm nút số
     private class HandleClickNumber implements View.OnClickListener {
         @Override
         public void onClick(View view) {
@@ -113,7 +114,35 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private boolean handleParseNumber() {//xử lý ép kiểu sang số thực
+//Xử lý sự hiện bấm phép tính
+    private class HandleClickCalculator implements View.OnClickListener {
+        @Override
+        public void onClick(View view) {//Xử lý phép tính liên tiếp cho tới khi bấm = mới kết thúc
+            Button btn = (Button) findViewById(view.getId());
+            if(btn.getText().toString().equals("-")){//trường hợp số âm
+                if(textView.getText().toString().equals("")){
+                    String tmp = textView.getText().toString() + btn.getText().toString();
+                    setTextInTextView(tmp);//gắn kết quả vào text view
+                    return;
+                }
+            }
+            if(!ParseNumber())//nếu parse lỗi sẽ dừng thực hiện phép tính
+                return;
+            if (calculating) {//nếu chưa bấm '='
+                if(!calculator())//thực hiện phép tính cũ
+                    return;
+            } else//nếu đã bấm = hoặc app bấm phép tính lần đầu thì gán true để những lần sau thực hiện phép tính cũ
+                calculating = true;
+            method = ((Button) findViewById(view.getId())).getText().toString();//lưu phép tính mới
+            textView.setText("");//clear text view
+
+        }
+    }
+
+
+    ///Các hàm liên quan đến xử lý tính toán, ép kiểu///
+
+    private boolean ParseNumber() {//xử lý ép kiểu sang số thực
         String tmp = textView.getText().toString();
         try {
             if (!method.equals("")) {//Nếu có bấm phép tính thì số gán vào newNumber
@@ -129,33 +158,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private class handleClickCalculator implements View.OnClickListener {
-        @Override
-        public void onClick(View view) {//Xử lý phép tính liên tiếp cho tới khi bấm = mới kết thúc
-            Button btn = (Button) findViewById(view.getId());
-            if(btn.getText().toString().equals("-")){//trường hợp số âm
-                if(textView.getText().toString().equals("")){
-                    String tmp = textView.getText().toString() + btn.getText().toString();
-                    setTextInTextView(tmp);
-                    return;
-                }
-            }
-            if(!handleParseNumber())//nếu parse lỗi sẽ dừng thực hiện phép tính
-                return;
-            if (calculating) {//nếu chưa bấm '='
-                if(!calculator())//thực hiện phép tính cũ
-                    return;
-            } else//nếu đã bấm = hoặc app bấm phép tính lần đầu thì gán true để những lần sau thực hiện phép tính cũ
-                calculating = true;
-            method = ((Button) findViewById(view.getId())).getText().toString();//lưu phép tính mới
-            textView.setText("");//clear text view
-
-        }
-    }
-
-    private boolean calculator() {
-//        if(!handleParseNumber())//parse số
-//            return false;
+    private boolean calculator() {///Hàm xử lý thực hiện tính toán
         switch (method) {
             case "+":
                 result += newNumber;
@@ -182,20 +185,9 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private String fixedDecimal(String str){
-        int index = str.indexOf('.');
-        if(index!=-1){
-            String tmp = str.substring(index);
-            if(tmp.length()>10) {
-                return str.substring(0, index + 11);
-            }
-        }
-        return str;
-    }
 
     private void setTextInTextView(String str){
         if (str.length() > 10) {// điều chỉnh kích thước chữ để vừa khung nhìn
-            str = fixedDecimal(str);
             textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 80 - Math.round(str.length() * 1.2));
         } else {
             textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 72);
