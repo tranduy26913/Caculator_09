@@ -21,7 +21,6 @@ public class MainActivity extends AppCompatActivity {
     Button btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8, btn9, btn0, btnDot, btnC, btnResult, btnAdd, btnSub, btnMulti, btnDiv;
     TextView textView;
 
-    private static final DecimalFormat dfSharp = new DecimalFormat("#.########");
     double newNumber = 0, result = 0;//các toán tử và kết quả
     boolean calculating = false;//flag cho biết phép tính đang được thực hiện
     String method = "";//phép tính
