@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.Button;
@@ -50,6 +51,9 @@ public class MainActivity extends AppCompatActivity {
         btnMulti = (Button) findViewById(R.id.btnMulti);
         btnDiv = (Button) findViewById(R.id.btnDiv);
         textView = (TextView) findViewById(R.id.textView);
+        textView.setText("");
+        //textView.setSelected(true);
+        textView.setMovementMethod(new ScrollingMovementMethod());
     }
 
     private void setEvent() {
@@ -91,8 +95,10 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 if (calculator()) {
                     String tmp = BigDecimal.valueOf(result).toPlainString(); //hiển thị giá trị dạng thập phân
+
                     if (tmp.length() > 10) { // điều chỉnh kích thước chữ để vừa khung nhìn
-                        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 80 - tmp.length() * 2);
+                        tmp = fixedDecimal(tmp);
+                        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 80 -  Math.round(tmp.length() * 1.2));
                     } else {
                         textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 72);
                     }
@@ -106,11 +112,12 @@ public class MainActivity extends AppCompatActivity {
     private class HandleClickNumber implements View.OnClickListener {
         @Override
         public void onClick(View view) {
+
             Button btn = (Button) findViewById(view.getId());
             String tmp = textView.getText().toString();
             tmp = tmp + btn.getText().toString();
             if (tmp.length() > 10) {// điều chỉnh kích thước chữ để vừa khung nhìn
-                textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 80 - tmp.length() * 2);
+                textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 80 - Math.round(tmp.length() * 1.2));
             } else {
                 textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 72);
             }
@@ -146,6 +153,7 @@ public class MainActivity extends AppCompatActivity {
                 calculating = true;
             method = ((Button) findViewById(view.getId())).getText().toString();//lưu phép tính mới
             textView.setText("");//clear text view
+
         }
     }
 
@@ -176,6 +184,17 @@ public class MainActivity extends AppCompatActivity {
         method = "";
         return true;
 
+    }
+
+    private String fixedDecimal(String str){
+        int index = str.indexOf('.');
+        if(index!=-1){
+            String tmp = str.substring(index);
+            if(tmp.length()>10) {
+                return str.substring(0, index + 11);
+            }
+        }
+        return str;
     }
 
 }
