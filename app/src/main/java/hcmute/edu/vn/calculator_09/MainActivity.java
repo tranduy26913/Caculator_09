@@ -95,13 +95,7 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 if (calculator()) {
                     String tmp = BigDecimal.valueOf(result).toPlainString(); //hiển thị giá trị dạng thập phân
-
-                    if (tmp.length() > 10) { // điều chỉnh kích thước chữ để vừa khung nhìn
-                        tmp = fixedDecimal(tmp);
-                        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 80 -  Math.round(tmp.length() * 1.2));
-                    } else {
-                        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 72);
-                    }
+                    setTextInTextView(tmp);
                     textView.setText(tmp); // gắn kết quả vào text view
                     calculating = false;
                 }
@@ -112,16 +106,10 @@ public class MainActivity extends AppCompatActivity {
     private class HandleClickNumber implements View.OnClickListener {
         @Override
         public void onClick(View view) {
-
             Button btn = (Button) findViewById(view.getId());
             String tmp = textView.getText().toString();
             tmp = tmp + btn.getText().toString();
-            if (tmp.length() > 10) {// điều chỉnh kích thước chữ để vừa khung nhìn
-                textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 80 - Math.round(tmp.length() * 1.2));
-            } else {
-                textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 72);
-            }
-            textView.setText(tmp);
+            setTextInTextView(tmp);
         }
     }
 
@@ -144,6 +132,14 @@ public class MainActivity extends AppCompatActivity {
     private class handleClickCalculator implements View.OnClickListener {
         @Override
         public void onClick(View view) {//Xử lý phép tính liên tiếp cho tới khi bấm = mới kết thúc
+            Button btn = (Button) findViewById(view.getId());
+            if(btn.getText().toString().equals("-")){//trường hợp số âm
+                if(textView.getText().toString().equals("")){
+                    String tmp = textView.getText().toString() + btn.getText().toString();
+                    setTextInTextView(tmp);
+                    return;
+                }
+            }
             if(!handleParseNumber())//nếu parse lỗi sẽ dừng thực hiện phép tính
                 return;
             if (calculating) {//nếu chưa bấm '='
@@ -195,6 +191,16 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         return str;
+    }
+
+    private void setTextInTextView(String str){
+        if (str.length() > 10) {// điều chỉnh kích thước chữ để vừa khung nhìn
+            str = fixedDecimal(str);
+            textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 80 - Math.round(str.length() * 1.2));
+        } else {
+            textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 72);
+        }
+        textView.setText(str);
     }
 
 }
