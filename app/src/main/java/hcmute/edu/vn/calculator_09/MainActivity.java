@@ -107,9 +107,9 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onClick(View view) {
             Button btn = (Button) findViewById(view.getId());
-            String tmp = textView.getText().toString();
-            tmp = tmp + btn.getText().toString();
-            setTextInTextView(tmp);
+            String tmp = textView.getText().toString();//lấy giá trị hiện tại trên màn hình hiển thị
+            tmp = tmp + btn.getText().toString();//ghép số vừa nhập vào giá trị vừa lấy
+            setTextInTextView(tmp);//gắn giá trị mới vào textview
         }
     }
 
